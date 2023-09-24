@@ -15,3 +15,4 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: scrapy-telegram-bot
           source: main.py
+          environment: TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }},CHAT_ID=${{ secrets.CHAT_ID }}
