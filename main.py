@@ -22,7 +22,6 @@ def lambda_handler(event, context):
         "message" : message,
         "status_code": status_code
     }
-    print(log)
 
     return {
         'statusCode': 200,
@@ -32,17 +31,21 @@ def lambda_handler(event, context):
 def scrapy_request(body):
     body_stats = body.get("stats", {})
 
-    template = "SPIDER: {}\nSTATS: {}"
-    stats = ""
+    template = "<pre>{}\n\n\n{}</pre>"
 
-    for stat in body_stats.keys():
-        stats += "{} - {}\n".format(
-            stat, body_stats[stat]
-        )
+    stats_table = (
+        "| Statistics Name                         | Statistics Value             \n"
+        "| --------------------------------------- | -----------------------------\n"
+    )
+
+    for stats in body_stats.keys():
+        stats_table = stats_table + "| {0:<40}| {1}".format(
+            stats, body_stats[stats]
+        ) + "\n"
 
     message = template.format(
-        body["spider"],
-        stats
+        body["spider"].upper(),
+        stats_table.upper()
     )
 
     return message, "scrapy_request"
@@ -68,8 +71,3 @@ def event_process(event):
         content["stats"] = json.loads(stats)
 
     return content
-
-lambda_handler(
-    {'version': '1.0', 'resource': '/scrapy-telegram-bot', 'path': '/default/scrapy-telegram-bot', 'httpMethod': 'POST', 'headers': {'Content-Length': '818', 'Content-Type': 'application/json', 'Host': '9oo5ujc0c3.execute-api.us-east-1.amazonaws.com', 'User-Agent': 'python-requests/2.29.0', 'X-Amzn-Trace-Id': 'Root=1-651153e8-7e5ac58801648e7b0130e10a', 'X-Forwarded-For': '89.214.107.77', 'X-Forwarded-Port': '443', 'X-Forwarded-Proto': 'https', 'accept': '*/*', 'accept-encoding': 'gzip, deflate, br'}, 'multiValueHeaders': {'Content-Length': ['818'], 'Content-Type': ['application/json'], 'Host': ['9oo5ujc0c3.execute-api.us-east-1.amazonaws.com'], 'User-Agent': ['python-requests/2.29.0'], 'X-Amzn-Trace-Id': ['Root=1-651153e8-7e5ac58801648e7b0130e10a'], 'X-Forwarded-For': ['89.214.107.77'], 'X-Forwarded-Port': ['443'], 'X-Forwarded-Proto': ['https'], 'accept': ['*/*'], 'accept-encoding': ['gzip, deflate, br']}, 'queryStringParameters': None, 'multiValueQueryStringParameters': None, 'requestContext': {'accountId': '777450756162', 'apiId': '9oo5ujc0c3', 'domainName': '9oo5ujc0c3.execute-api.us-east-1.amazonaws.com', 'domainPrefix': '9oo5ujc0c3', 'extendedRequestId': 'LzoMXgYUoAMEYRw=', 'httpMethod': 'POST', 'identity': {'accessKey': None, 'accountId': None, 'caller': None, 'cognitoAmr': None, 'cognitoAuthenticationProvider': None, 'cognitoAuthenticationType': None, 'cognitoIdentityId': None, 'cognitoIdentityPoolId': None, 'principalOrgId': None, 'sourceIp': '89.214.107.77', 'user': None, 'userAgent': 'python-requests/2.29.0', 'userArn': None}, 'path': '/default/scrapy-telegram-bot', 'protocol': 'HTTP/1.1', 'requestId': 'LzoMXgYUoAMEYRw=', 'requestTime': '25/Sep/2023:09:33:28 +0000', 'requestTimeEpoch': 1695634408401, 'resourceId': 'ANY /scrapy-telegram-bot', 'resourcePath': '/scrapy-telegram-bot', 'stage': 'default'}, 'pathParameters': None, 'stageVariables': None, 'body': '{"spider": "datamaq", "stats": "{\\n    \\"downloader/request_bytes\\": 127712,\\n    \\"downloader/request_count\\": 171,\\n    \\"downloader/request_method_count/GET\\": 171,\\n    \\"downloader/response_bytes\\": 2762449,\\n    \\"downloader/response_count\\": 171,\\n    \\"downloader/response_status_count/200\\": 171,\\n    \\"elapsed_time_seconds\\": 17.86098,\\n    \\"finish_reason\\": \\"finished\\",\\n    \\"finish_time\\": \\"2023-09-25 09:33:27.753657\\",\\n    \\"item_scraped_count\\": 85,\\n    \\"memusage/max\\": 64311296,\\n    \\"memusage/startup\\": 64311296,\\n    \\"request_depth_max\\": 2,\\n    \\"response_received_count\\": 171,\\n    \\"scheduler/dequeued\\": 171,\\n    \\"scheduler/dequeued/memory\\": 171,\\n    \\"scheduler/enqueued\\": 171,\\n    \\"scheduler/enqueued/memory\\": 171,\\n    \\"start_time\\": \\"2023-09-25 09:33:09.892677\\"\\n}"}', 'isBase64Encoded': False},
-    ""
-)
