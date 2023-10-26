@@ -31,15 +31,11 @@ def lambda_handler(event, context):
 def scrapy_request(body):
     body_stats = body.get("stats", {})
 
-    template = "<pre>{}\n\n\n{}</pre>"
-
-    stats_table = (
-        "| Statistics Name                         | Statistics Value             \n"
-        "| --------------------------------------- | -----------------------------\n"
-    )
+    template = "{}\n\n{}"
+    stats_table = ""
 
     for stats in body_stats.keys():
-        stats_table = stats_table + "| {0:<40}| {1}".format(
+        stats_table = stats_table + "{} -> {}".format(
             stats, body_stats[stats]
         ) + "\n"
 
